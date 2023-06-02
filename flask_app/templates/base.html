@@ -82,9 +82,19 @@
                                     <a class="nav-link" href="/logout">Log Out</a>
                                 </li>
                                 <li>
+                                    {%if 'user_id' not in session%}
                                     <div class="profile-pic-div">
-                                        <img class="profile-pic" img src="{{ url_for('static', filename='images/pic.jpg') }}" alt="custom-Profile-Picture">
+                                        <img class="profile-pic" src="{{ url_for('static', filename='default_pic/defualt_profile_pic.jpg') }}" alt="custom-Profile-Picture" alt="default_pic">
                                     </div>
+                                    {%else%}
+                                    <div class="profile-pic-div">
+                                        {% if user.profile_pic %}
+                                            <img class="profile-pic" src="/uploads/{{ user.profile_pic }}" alt="custom-Profile-Picture">
+                                        {% else %}
+                                            <img class="profile-pic" src="{{ url_for('static', filename='default_pic/defualt_profile_pic.jpg') }}" alt="custom-Profile-Picture">
+                                        {% endif %}
+                                    </div>
+                                    {%endif%}
 
                                 </li>
                                 {%if "user_id" in session%}

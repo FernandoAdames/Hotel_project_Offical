@@ -2,7 +2,9 @@ from flask_app import app
 from flask_bcrypt import Bcrypt        
 bcrypt = Bcrypt(app) 
 from flask_app.models import user_model
-from flask import render_template, request, flash, session, redirect 
+from flask import render_template, request, flash, session, redirect, send_from_directory
+import uuid
+import os
 
 
 @app.route("/")
@@ -67,13 +69,18 @@ def logging_out_user():
     return redirect("/")
 
 
+@app.route("/uploads/<filename>")
+def serve_uploaded_files(filename):
+    return send_from_directory(app.config["UPLOAD_DIR"], filename)
+
 @app.route("/edit", methods=["POST"])
 def edit_profile():
     current_user = user_model.User.get_user_by_ID(session["user_id"])
-    file = request.files['profile_pic']
-    file.save('flask_app/static/images/pic.jpg')
-    profile_pic = 'static/images/pic.jpg'
-    session["profile_pic"] = profile_pic
+        
+    # file = request.files['profile_pic']
+    # file.save('flask_app/static/images/pic.jpg')
+    # profile_pic = 'static/images/pic.jpg'
+    # session["profile_pic"] = profile_pic
     check_password = bcrypt.check_password_hash(current_user.password, request.form["current_password"])
     new_dict = {
         "email":request.form["email"],
@@ -85,12 +92,20 @@ def edit_profile():
     if  user_model.User.validate_edit(new_dict):
         pw_hash = bcrypt.generate_password_hash(request.form['new_password'])
         user_form_data = {
-        "email": request.form["email"],
-        "password": pw_hash,
-        "id": request.form["user_id"]
+            "email": request.form["email"],
+            "password": pw_hash,
+            "id": request.form["user_id"]
         }
         user_model.User.edit_user_profile(user_form_data)
-        return redirect("/")
+        if "profile_pic" in request.files:
+            uploaded_file = request.files["profile_pic"] #fernando.png
+            file_extension = os.path.splitext("fernando.png")[1] # ["fernando", ".png"]
+            unique_filename = uuid.uuid4().hex + file_extension# generates random string => afsafsafdsafda.png
+            file_path = os.path.join(app.config['UPLOAD_DIR'], unique_filename)
+            uploaded_file.save(file_path)
+            user_model.User.set_profile_picture(request.form["user_id"], unique_filename)
+            
+        return redirect ("/")
     else:
         return redirect("/edit")
 
