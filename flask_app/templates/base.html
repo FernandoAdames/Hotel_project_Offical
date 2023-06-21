@@ -42,17 +42,20 @@
         <div class="header">
                 <div class="nav-row">
                     <div class="logo-name">
+                        <div class="hotel-logo-div">
+                            <img class="logo-img" src="{{ url_for('static', filename='images/logo.jpeg') }}">
+                        </div>
                         <div class="full">
                         <div class="center-desk">
                             <li class="nav-item">
-                                <div class="logo">
+                                <div class="logo-content">
                                     <h1 class="hotel-name">The Rooftop Club</h1>
                                 </div>
                             </li>
                         </div>
                     </div>
                 </div>
-                <div>
+                <div class="navigation-parent-div">
                     <nav class="navigation navbar navbar-expand-md navbar-dark ">
                         <div>
 
@@ -82,11 +85,6 @@
                                     <a class="nav-link" href="/logout">Log Out</a>
                                 </li>
                                 <li>
-                                    {%if 'user_id' not in session%}
-                                    <div class="profile-pic-div">
-                                        <img class="profile-pic" src="{{ url_for('static', filename='default_pic/defualt_profile_pic.jpg') }}" alt="custom-Profile-Picture" alt="default_pic">
-                                    </div>
-                                    {%else%}
                                     <div class="profile-pic-div">
                                         {% if user.profile_pic %}
                                             <img class="profile-pic" src="/uploads/{{ user.profile_pic }}" alt="custom-Profile-Picture">
@@ -94,12 +92,8 @@
                                             <img class="profile-pic" src="{{ url_for('static', filename='default_pic/defualt_profile_pic.jpg') }}" alt="custom-Profile-Picture">
                                         {% endif %}
                                     </div>
-                                    {%endif%}
-
                                 </li>
-                                {%if "user_id" in session%}
-                                    <h4 class="user_name">{{user.first_name}} {{user.last_name}}</h4>
-                                {%endif%}
+                                <h4 class="user_name">{{user.first_name}} {{user.last_name}}</h4>
                             </ul>
                             {% else %}
                             <ul class="navbar-nav mr-auto">
@@ -121,7 +115,7 @@
                                     </li>
                                     <li class="nav-item">
                                         <div class="profile-pic-div">
-                                            <img class="profile-pic" img src="{{ url_for('static', filename='images/defualt_profile_pic.jpg') }}" alt="defualt_profile_pic">
+                                            <img class="profile-pic" img src="{{ url_for('static', filename='default_pic/defualt_profile_pic.jpg') }}" alt="defualt_profile_pic">
                                         </div>
                                     </li>
                                 </ul>
